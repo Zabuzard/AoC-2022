@@ -1,6 +1,3 @@
-import java.awt.SystemColor.window
-import java.util.stream.Collectors.toSet
-
 // AOC Day 6
 fun main() {
     val lines = {}::class.java.getResourceAsStream("input.txt")!!.bufferedReader().readLines()
