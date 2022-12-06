@@ -1,0 +1,9 @@
+# Project exclude paths
+/.gradle/
+/build/
+/build/classes/kotlin/day_1/
+/build/classes/kotlin/day_2/
+/build/classes/kotlin/day_3/
+/build/classes/kotlin/day_4/
+/build/classes/kotlin/day_5/
+/build/classes/kotlin/day_6/
