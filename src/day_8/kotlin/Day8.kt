@@ -4,16 +4,16 @@ fun main() {
 
     val forest = lines.map(String::toCharArray).map { it.map(Char::digitToInt).toList() }
 
-    val visibleTrees = forest.indices2D()
-        .count { (row, col) -> isTreeVisible(row, col, forest) }
+    val visibleTrees = forest.flattenWithIndex()
+        .count { (row, col, _) -> isTreeVisible(row, col, forest) }
 
     println("The amount of visible tree is $visibleTrees")
 
     println("Scenic score of tree at (1, 2) is ${scenicTreeScore(1, 2, forest)}.")
     println("Scenic score of tree at (3, 2) is ${scenicTreeScore(3, 2, forest)}.")
 
-    val bestScenicTreeScore = forest.indices2D()
-        .maxOf { (row, col) -> scenicTreeScore(row, col, forest) }
+    val bestScenicTreeScore = forest.flattenWithIndex()
+        .maxOf { (row, col, _) -> scenicTreeScore(row, col, forest) }
 
     println("The best scenic score of a tree is $bestScenicTreeScore")
 }
@@ -70,8 +70,11 @@ private fun <T> List<T>.viewToLeft(cutIndex: Int) =
 private fun <T> List<T>.viewToRight(cutIndex: Int) =
     slice(cutIndex + 1..lastIndex)
 
-private fun List<List<*>>.indices2D() =
-    indices
-        .flatMap { row ->
-            get(0).indices.map { col -> Pair(row, col) }
+private fun <T> Iterable<Iterable<T>>.flattenWithIndex(): List<GridValue<T>> =
+    withIndex().flatMap { (rowIndex, row) ->
+        row.withIndex().map { (colIndex, value) ->
+            GridValue(rowIndex, colIndex, value)
         }
+    }
+
+data class GridValue<out T>(val rowIndex: Int, val colIndex: Int, val value: T)
