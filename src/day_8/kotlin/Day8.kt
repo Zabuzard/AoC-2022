@@ -18,26 +18,18 @@ fun main() {
     println("The best scenic score of a tree is $bestScenicTreeScore")
 }
 
-enum class ViewDirection {
-    LEFT_TO_RIGHT,
-    RIGHT_TO_LEFT
-}
-
 fun scenicTreeScore(row: Int, col: Int, forest: List<List<Int>>): Int {
     val treeHeight = forest[row][col]
 
     return getAllViewsFrom(row, col, forest)
-        .map { (view, direction) -> getVisibleTrees(view, treeHeight, direction) }
+        .map { getVisibleTrees(it, treeHeight) }
         .reduce(Int::times)
 }
 
-fun getVisibleTrees(view: List<Int>, treeHeight: Int, viewDirection: ViewDirection): Int {
-    val viewInDirection =
-        if (viewDirection == ViewDirection.LEFT_TO_RIGHT) view else view.asReversed()
+fun getVisibleTrees(view: List<Int>, treeHeight: Int): Int {
+    val smallerTrees = view.takeWhile { it < treeHeight }.count()
 
-    val smallerTrees = viewInDirection.takeWhile { it < treeHeight }.count()
-
-    return if (smallerTrees < viewInDirection.size) {
+    return if (smallerTrees < view.size) {
         // There is a high tree blocking the view, but it can be seen as well
         smallerTrees + 1
     } else smallerTrees
@@ -47,7 +39,7 @@ fun isTreeVisible(row: Int, col: Int, forest: List<List<Int>>): Boolean {
     val treeHeight = forest[row][col]
 
     return getAllViewsFrom(row, col, forest)
-        .any { (view, _) -> isTreeVisible(view, treeHeight) }
+        .any { isTreeVisible(it, treeHeight) }
 }
 
 fun isTreeVisible(view: List<Int>, treeHeight: Int) =
@@ -57,14 +49,14 @@ fun getAllViewsFrom(
     rowIndex: Int,
     colIndex: Int,
     forest: List<List<Int>>
-): List<Pair<List<Int>, ViewDirection>> {
+): List<List<Int>> {
     val row = forest[rowIndex]
     val col = forest.col(colIndex)
 
-    val leftRow = row.viewToLeft(colIndex) to ViewDirection.RIGHT_TO_LEFT
-    val rightRow = row.viewToRight(colIndex) to ViewDirection.LEFT_TO_RIGHT
-    val upCol = col.viewToLeft(rowIndex) to ViewDirection.RIGHT_TO_LEFT
-    val downCol = col.viewToRight(rowIndex) to ViewDirection.LEFT_TO_RIGHT
+    val leftRow = row.viewToLeft(colIndex)
+    val rightRow = row.viewToRight(colIndex)
+    val upCol = col.viewToLeft(rowIndex)
+    val downCol = col.viewToRight(rowIndex)
 
     return listOf(leftRow, rightRow, upCol, downCol)
 }
@@ -73,7 +65,7 @@ private fun <T> List<List<T>>.col(col: Int) =
     map { it[col] }.toList()
 
 private fun <T> List<T>.viewToLeft(cutIndex: Int) =
-    slice(0 until cutIndex)
+    slice(0 until cutIndex).asReversed()
 
 private fun <T> List<T>.viewToRight(cutIndex: Int) =
     slice(cutIndex + 1..lastIndex)
