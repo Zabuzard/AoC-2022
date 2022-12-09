@@ -2,7 +2,7 @@ import java.lang.IllegalArgumentException
 
 // AOC Day 2
 fun main() {
-    val lines = {}::class.java.getResourceAsStream("input.txt")!!.bufferedReader().readLines().filter(String::isNotBlank)
+    val lines = ClassLoader.getSystemResource("input.txt").readText().lines().filter(String::isNotBlank)
 
     val roundsDirect = lines.map(String::asRoundDirect)
     val totalScoreDirect = roundsDirect.map(Round::score).sum()

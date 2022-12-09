@@ -2,7 +2,7 @@ import java.lang.IllegalArgumentException
 
 // AOC Day 7
 fun main() {
-    val lines = {}::class.java.getResourceAsStream("input.txt")!!.bufferedReader().readLines()
+    val lines = ClassLoader.getSystemResource("input.txt").readText().lines()
 
     val root = Directory("root", null)
     var currentDirectory = root

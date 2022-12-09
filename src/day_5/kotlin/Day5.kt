@@ -1,6 +1,6 @@
 // AOC Day 5
 fun main() {
-    val lines = {}::class.java.getResourceAsStream("input.txt")!!.bufferedReader().readLines()
+    val lines = ClassLoader.getSystemResource("input.txt").readText().lines()
 
     val stacksForCraneMover9000 = computeStacks(lines)
     val moves = computeMoves(lines)

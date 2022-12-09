@@ -1,5 +1,8 @@
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
 
+// Template by Nxllpointer, thanks ❤
+// https://github.com/Nxllpointer/AdventOfCode2022/blob/9beb193f826f9110ebe436645f3176bf6da5869a/build.gradle.kts
+
 plugins {
     kotlin("jvm") version "1.7.21"
 }
@@ -7,7 +10,7 @@ plugins {
 group = "org.example"
 version = "1.0-SNAPSHOT"
 
-val currentDay = 8
+val currentDay = 9
 
 repositories {
     mavenCentral()

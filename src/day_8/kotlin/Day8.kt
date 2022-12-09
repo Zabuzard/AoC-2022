@@ -1,6 +1,6 @@
 // AOC Day 8
 fun main() {
-    val lines = {}::class.java.getResourceAsStream("input.txt")!!.bufferedReader().readLines()
+    val lines = ClassLoader.getSystemResource("input.txt").readText().lines()
 
     val forest = lines.map(String::toCharArray).map { it.map(Char::digitToInt).toList() }
 

@@ -1,6 +1,6 @@
 // AOC Day 6
 fun main() {
-    val lines = {}::class.java.getResourceAsStream("input.txt")!!.bufferedReader().readLines()
+    val lines = ClassLoader.getSystemResource("input.txt").readText().lines()
 
     val text = lines.map(::findMarkerEnd).map { "Marker ends: $it" }
 

@@ -1,6 +1,6 @@
 // AOC Day 1
 fun main() {
-    val lines = {}::class.java.getResourceAsStream("input.txt")!!.bufferedReader().readLines()
+    val lines = ClassLoader.getSystemResource("input.txt").readText().lines()
     val elves = parseElves(lines)
 
     val mostCaloriesElf = elves.maxBy { it.total }

@@ -1,6 +1,6 @@
 // AOC Day 3
 fun main() {
-    val lines = {}::class.java.getResourceAsStream("input.txt")!!.bufferedReader().readLines()
+    val lines = ClassLoader.getSystemResource("input.txt").readText().lines()
     
     val rucksacks = lines.map(String::toCharArray).map{
         val rucksackItems = it.map(::Item)

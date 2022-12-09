@@ -1,6 +1,6 @@
 // AOC Day 4
 fun main() {
-    val lines = {}::class.java.getResourceAsStream("input.txt")!!.bufferedReader().readLines()
+    val lines = ClassLoader.getSystemResource("input.txt").readText().lines()
     val tasks = lines.map(String::toElfTask)
 
     val tasksThatContainOther = tasks.count(ElfTask::doesFullyContainRange)
