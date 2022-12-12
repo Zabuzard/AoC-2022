@@ -10,14 +10,10 @@ plugins {
 group = "org.example"
 version = "1.0-SNAPSHOT"
 
-val currentDay = 11
+val currentDay = 12
 
 repositories {
     mavenCentral()
-}
-
-dependencies {
-
 }
 
 kotlin {
@@ -29,6 +25,10 @@ kotlin {
                 val dayCompilation = create("day_$day") {
                     associateWith(common)
                     generateAOCBaseStructure(day)
+
+                    dependencies {
+                        implementation("io.github.zabuzard.maglev:maglev:1.2")
+                    }
                 }
 
                 tasks.create<JavaExec>("runDay$day") {
@@ -43,7 +43,6 @@ kotlin {
                     jvmTarget = "17"
                 }
             }
-
         }
     }
 
