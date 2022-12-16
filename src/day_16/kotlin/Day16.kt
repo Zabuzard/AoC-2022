@@ -1,8 +1,13 @@
+import io.github.zabuzard.maglev.external.algorithms.DijkstraModule
 import io.github.zabuzard.maglev.external.algorithms.ShortestPathComputationBuilder
+import io.github.zabuzard.maglev.external.algorithms.TentativeDistance
 import io.github.zabuzard.maglev.external.graph.Edge
 import io.github.zabuzard.maglev.external.graph.simple.ReversedConsumer
 import io.github.zabuzard.maglev.external.graph.simple.ReversedProvider
 import io.github.zabuzard.maglev.external.graph.simple.SimpleGraph
+import java.util.*
+import kotlin.collections.HashSet
+import kotlin.streams.asSequence
 
 // AOC Day 16
 fun main() {
@@ -46,7 +51,7 @@ fun main() {
             // Open valve
             if (source.timeMinute < MAX_MINUTES - 1) {
                 val remainingTime = MAX_MINUTES - source.timeMinute
-                val flowReleased = remainingTime * nameToValveData[source.name]!!.flowRate
+                val flowReleased = (remainingTime - 1) * nameToValveData[source.name]!!.flowRate
 
                 graph.addEdge(
                     NegativeSupportEdge(
@@ -63,25 +68,61 @@ fun main() {
 
     val algo = ShortestPathComputationBuilder(graph)
         .resetOrdinaryDijkstra()
+        .addModule(object : DijkstraModule<ValveAtTime, NegativeSupportEdge<ValveAtTime>> {
+            override fun provideDistance(
+                node: ValveAtTime,
+                parentEdge: NegativeSupportEdge<ValveAtTime>?,
+                tentativeDistance: Double,
+                pathDestination: ValveAtTime?,
+                currentTentativeDistance: TentativeDistance<ValveAtTime, NegativeSupportEdge<ValveAtTime>>?
+            ): Optional<TentativeDistance<ValveAtTime, NegativeSupportEdge<ValveAtTime>>> {
+                val distance: TentativeDistance<ValveAtTime, NegativeSupportEdge<ValveAtTime>> =
+                    TentativeDistance(node, parentEdge, tentativeDistance)
+
+                if (parentEdge == null || currentTentativeDistance == null) {
+                    distance.payload = emptySet<String>()
+                } else {
+                    val openedValves = HashSet(currentTentativeDistance.payload as Set<String>)
+                    if (parentEdge.opensValve()) {
+                        openedValves += parentEdge.source.name
+                    }
+                    distance.payload = openedValves
+                }
+                return Optional.of(distance)
+            }
+
+            override fun doConsiderEdgeForRelaxation(
+                edge: NegativeSupportEdge<ValveAtTime>,
+                pathDestination: ValveAtTime?,
+                tentativeDistance: TentativeDistance<out ValveAtTime, NegativeSupportEdge<ValveAtTime>>
+            ): Boolean {
+                return if (edge.opensValve()) {
+                    val openedValves = tentativeDistance.getPayload() as Set<String>
+                    edge.source.name !in openedValves
+                } else {
+                    true
+                }
+            }
+        })
         .build()
 
     val tree = algo.shortestPathReachable(ValveAtTime("AA", 0))
 
-    val path = tree.leaves
-        .filter { it.timeMinute == 30 }
+    val path = tree.reachableNodes
+        .asSequence()
+        //.filter { it.timeMinute == MAX_MINUTES }
         .map { tree.getPathTo(it).orElseThrow() }
         .minBy { it.totalCost }
 
     println("Total cost: ${path.totalCost}")
     path.forEach { println(it.edge) }
     println()
-    val openValves = path.filter {
-        it.edge.destination.timeMinute - it.edge.source.timeMinute >= 2
-    }.map { it.edge.source.name }
+    val openValves = path.filter { it.edge.opensValve() }.map { it.edge.source.name }
 
-    // TODO Teach it to not open valves twice...
     println("Open valves: $openValves")
 }
+
+private fun Edge<ValveAtTime>.opensValve() = destination.timeMinute - source.timeMinute >= 2
 
 private const val MAX_MINUTES = 30
 
