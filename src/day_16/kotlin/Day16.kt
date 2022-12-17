@@ -68,7 +68,7 @@ fun main() {
 
     val algo = ShortestPathComputationBuilder(graph)
         .resetOrdinaryDijkstra()
-        .addModule(object : DijkstraModule<ValveAtTime, NegativeSupportEdge<ValveAtTime>> {
+        /*.addModule(object : DijkstraModule<ValveAtTime, NegativeSupportEdge<ValveAtTime>> {
             override fun provideDistance(
                 node: ValveAtTime,
                 parentEdge: NegativeSupportEdge<ValveAtTime>?,
@@ -104,6 +104,7 @@ fun main() {
                 }
             }
         })
+         */
         .build()
 
     val tree = algo.shortestPathReachable(ValveAtTime("AA", 0))

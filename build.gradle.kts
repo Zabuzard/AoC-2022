@@ -10,11 +10,10 @@ plugins {
 group = "org.example"
 version = "1.0-SNAPSHOT"
 
-val currentDay = 16
+val currentDay = 17
 
 repositories {
     mavenCentral()
-    mavenLocal()
 }
 
 kotlin {
@@ -28,7 +27,7 @@ kotlin {
                     generateAOCBaseStructure(day)
 
                     dependencies {
-                        implementation("io.github.zabuzard.maglev:maglev:1.3")
+                        implementation("io.github.zabuzard.maglev:maglev:1.2")
                     }
                 }
 
