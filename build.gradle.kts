@@ -10,7 +10,7 @@ plugins {
 group = "org.example"
 version = "1.0-SNAPSHOT"
 
-val currentDay = 17
+val currentDay = 18
 
 repositories {
     mavenCentral()
